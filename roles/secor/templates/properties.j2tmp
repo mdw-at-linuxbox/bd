@@ -4,7 +4,7 @@ zookeeper.quorum={{ groups[['head'][0]][0] }}:2181
 
 aws.access.key={{ access_key }}
 aws.secret.key={{ secret_key }}
-aws.endpoint={{ endpoint }}
+aws.endpoint={{ s3a_endpoint }}
 aws.client.pathstyleaccess=true
 secor.s3.bucket={{ secor_bucket }}
 secor.s3.path=sequence

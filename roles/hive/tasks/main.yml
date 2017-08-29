@@ -9,7 +9,7 @@
   - master_group in group_names
 
 - unarchive:
-    src: "{{ tarball_prefix }}/{{ hive_tarball}}"
+    src: "{{ tarball_dest_path }}/{{ hive_binary_name }}"
     dest: /hadoop/hive
     remote_src: True
     extra_opts: "--strip-components=1"
@@ -32,10 +32,10 @@
 - name: Link Hadoop libraries
   file: src=/hadoop/share/hadoop/tools/lib/{{ item }} dest=/hadoop/hive/lib/{{ item }} state=link
   with_items:
-  - hadoop-aws-2.8.1.jar
-  - aws-java-sdk-core-1.10.6.jar
-  - aws-java-sdk-kms-1.10.6.jar
-  - aws-java-sdk-s3-1.10.6.jar
+  - hadoop-aws-{{ hadoop_version }}.jar
+  - aws-java-sdk-core-{{ aws_java_sdk_version }}.jar
+  - aws-java-sdk-kms-{{ aws_java_sdk_version }}.jar
+  - aws-java-sdk-s3-{{ aws_java_sdk_version }}.jar
   when:
   - master_group in group_names
 
@@ -63,7 +63,7 @@
   - master_group in group_names
 
 - name: Create mariadb files and directories
-  file: path="{{ item.path }}" mode=0755 owner=mysql group=mysql state="{{ item.state }}"
+  file: path={{ item.path }} mode=0755 owner=mysql group=mysql state={{ item.state }}
   with_items:
   - { path: /var/run/mysqld, state: directory }
   - { path: /var/log/mysqld.log, state: touch }

@@ -1,9 +1,10 @@
 {% if inventory_hostname in groups[master_group] %}
 coordinator=true
+discovery-server.enabled=true
+node-scheduler.include-coordinator=false
 {% else %}
 coordinator=false
 {% endif %}
-node-scheduler.include-coordinator=false
 http-server.http.port=8880
 query.max-memory=1200GB
 query.max-memory-per-node=50GB
