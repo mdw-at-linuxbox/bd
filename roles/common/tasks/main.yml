@@ -1,18 +1,61 @@
 ---
 # This playbook contains common plays that will be run on all nodes.
 
-- name: Install ntp
-  yum: name=ntp state=present
-  tags: ntp
+- name: install required packages
+  action: >
+    {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
+  with_items:
+    - git
+    - gcc
+    - unzip
+    - patch
 
-- name: Configure ntp file
-  template: src=ntp.conf.j2 dest=/etc/ntp.conf
-  tags: ntp
-  notify: restart ntp
+- name: install some more helpful packages
+  action: >
+    {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
+  with_items:
+    - python2-boto3
+    - awscli
+  tags: helpful
 
-- name: Start the ntp service
-  service: name=ntpd state=started enabled=yes
-  tags: ntp
+- name: install helpful debugging stuff
+  action: >
+    {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
+  with_items:
+    - mlocate
+    - strace
+    - net-tools
+    - lsof
+    - gdb
+    - rcs
+  tags: debug
+
+- name: stop firewalld
+  service:
+    name: firewalld
+    enabled: no
+    state: stopped
+- name: Install java
+  {{ ansible_pkg_mgr }} name=java-1.8.0-openjdk state=present
+  tags: java
+
+- name: check for no ntp package
+  command: rpm -q chrony
+  register: ntp_pkg_query
+  ignore_errors: true
+  always_run: true
+  changed_when: false
+  tags: chrony
+  when: ansible_pkg_mgr == "yum" or ansible_pkg_mgr == "dnf"
+
+- name: start chronyd if no ntp
+  service:
+    name: chronyd
+    enabled: yes
+    state: started
+  when:
+    - ntp_pkg_query.rc == 0
+  tags: chrony
 
 - name: Copying Hadoop binaries to nodes
   copy: src={{ hadoop_binary_name }} dest={{ tarball_dest_path }} 

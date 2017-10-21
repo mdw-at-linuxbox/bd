@@ -14,19 +14,13 @@ Post deploy, the following software will be available inside the data lab:
 
 # Dependencies
 
-This playbook depends on the "oracle-java" playbook, you will need to install
-it from Ansible Galaxy. You can do this by running this command, assuming you
-have Ansible installed.
-
-```sudo ansible-galaxy install ansiblebit.oracle-java```
+Red Hat enterprise 7 or centos 7.
 
 # Provision Data Lab on AWS EC2
 
 The easiest way to experiment with this playbook and familiarize yourself with
-the data lab it creates is to leverage Amazon EC2. Several python packages are
-necessary for this approach, we recommend they be installed with pip:
-
-```sudo pip install --upgrade awscli boto3```
+the data lab it creates is to leverage Amazon EC2.  This script installs
+awscli and python2-boto3 for that purpose.
 
 In order to be able to access the data lab you will need to provide some
 information in the form of variables. These variables are defined by editing
@@ -65,8 +59,7 @@ play:
 # Provision Data Lab on Bare Metal
 
 If you decide to deploy to bare metal servers, the current assumption is that
-they are provisioned running Red Hat Enterprise Linux. Distributions like
-CentOS may work, but haven't been tested.
+they are provisioned running Red Hat Enterprise Linux 7 or CentOS 7.
 
 When you deploy to bare metal, you need to specify which group a particular
 node will assume in an Ansible inventory file. There are two main host groups

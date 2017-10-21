@@ -15,8 +15,18 @@
     extra_opts: "--strip-components=1"
     creates: /hadoop/LICENSE.txt
 
+- make hadoop configuration symlink
+  file:
+    src: /hadoop/etc/{{ item.path }}
+    dest: /etc/{{ item.dest }}
+    state: link
+  with_items:
+    - { path: 'hadoop', dest: 'hadoop' }
+  tags: hadoop
+
+# NB: DirectMap doesn't account for virtio balloon driver
 - name: Calculate memory settings
-  shell: /usr/bin/egrep DirectMap /proc/meminfo|awk '{total+=$2}END{print total/1024}'
+  command: awk '/MemTotal/{total+=$2}END{print total/1024}' /proc/meminfo
   register: memtotal
 
 - name: Configure profile
