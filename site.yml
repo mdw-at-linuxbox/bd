@@ -16,10 +16,10 @@
       oracle_java_version_update: 131,
       oracle_java_version_build: 11,
       oracle_java_rpm_url: "http://download.oracle.com/otn-pub/java/jdk/{{ oracle_java_version }}u{{ oracle_java_version_update }}-b{{ oracle_java_version_build }}/d54c1d3a095b4ff2b6607d096fa80163/jdk-{{ oracle_java_version }}u{{ oracle_java_version_update }}-linux-x64.rpm"}
-    - common
-#    - hadoop-common
-#    - hive
-    - spark
+    - { role: common, tags: common }
+#    - { role: hadoop-common, tags: hadoop-common }
+#    - { role: hive, tags: hive }
+#    - { role: spark, tags: spark }
 #    - maven
 #    - hive-testbench
     - { role: presto, tags: presto }

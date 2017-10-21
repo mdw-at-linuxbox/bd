@@ -6,7 +6,7 @@ node-scheduler.include-coordinator=false
 coordinator=false
 {% endif %}
 http-server.http.port=8880
-query.max-memory=1200GB
-query.max-memory-per-node=50GB
+query.max-memory={{ presto_max_memory_per_cluster }}
+query.max-memory-per-node={{ presto_max_memory_per_node }}
 discovery-server.enabled=true
 discovery.uri=http://{{ hostvars[groups[[master_group][0]][0]]['ansible_eth0']['ipv4']['address'] }}:8880

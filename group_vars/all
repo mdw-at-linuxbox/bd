@@ -72,6 +72,8 @@ s3a_buffer_dir: '/home/s3a'
 yarn_local_dirs: '/home'
 yarn_app_log_dir: 's3a://app-logs/'
 
+s3a_signing_algorithm: 'S3Signer'
+
 # Hadoop
 hadoop_tmp_dir: '/tmp/hadoop-${user.name}' # default '/tmp/hadoop-${user.name}'
 
@@ -115,8 +117,8 @@ presto_staging_dir: /home/tmp/presto
 
 ## Presto 0.170 Default settings
 presto_max_conns: 500
-presto_conn_timeout: 5m
-presto_socket_timeout: 5m
+presto_conn_timeout: 5s
+presto_socket_timeout: 5s
 presto_max_retry_time: 10m
 presto_max_backoff_times: 10m 
 presto_max_client_retries: 3         
@@ -124,6 +126,9 @@ presto_max_error_retries: 10
 presto_metastore_timeout: 10s       
 presto_metastore_refresh_interval: 0s
 presto_metastore_cache_ttl: 0s
+presto_max_memory_per_node: 40GB
+presto_max_memory_per_cluster: 920GB
+presto_jvm_memory: 80G
 
 # Secor
 secor_bucket: 'stream'
