@@ -29,7 +29,7 @@ the ``vars/ec2.yml`` file, notably:
    - ``my_ip`` : Add public ip address of your workstation
    - ``ec2_keypair`` : Add your EC2 keypair name
 
-You will also need to export your **AWS_ACCESS_KEY** and **AWS_SECRET_KEY** as
+You will also need to export your **AWS_ACCESS_KEY_ID** and **AWS_SECRET_ACCESS_KEY** as
 environment variables:
 
 ```

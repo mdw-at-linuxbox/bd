@@ -5,12 +5,12 @@
   service: name=mariadb state=restarted
 
 - name: init metastore
-  shell: JAVA_HOME=/etc/alternatives/java_sdk HADOOP_HOME=/hadoop /hadoop/hive/bin/schematool -initSchema -dbType mysql
+  shell: JAVA_HOME={{ java_sdk_path }} HADOOP_HOME=/hadoop /hadoop/hive/bin/schematool -initSchema -dbType mysql
   when:
-  - master_group in group_names
+  - head_group in group_names
   
 - name: start metastore
-  shell: JAVA_HOME=/etc/alternatives/java_sdk HADOOP_HOME=/hadoop nohup /hadoop/hive/bin/hive --service metastore &
+  shell: JAVA_HOME={{ java_sdk_path }} HADOOP_HOME=/hadoop nohup /hadoop/hive/bin/hive --service metastore &
 # >/var/log/hive/hive.out 2>/var/log/hive/hive.log &
   when:
-  - master_group in group_names
+  - head_group in group_names

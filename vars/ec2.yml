@@ -2,8 +2,8 @@
 # Default user for rhel ami
 remote_user: 'ec2-user'
 
-master_group: 'tag_Group_master'
-core_group: 'tag_Group_core'
+head_group: 'tag_Group_master'
+worker_group: 'tag_Group_core'
 
 # AWS Region Information
 aws_region: "us-east-1"

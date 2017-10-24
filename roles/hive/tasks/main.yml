@@ -6,16 +6,16 @@
     state: directory
     mode: 0755
   when:
-  - master_group in group_names
+  - head_group in group_names
 
 - unarchive:
-    src: "{{ tarball_dest_path }}/{{ hive_binary_name }}"
+    src: "{{ tarball_dest_path }}{{ hive_binary_name }}"
     dest: /hadoop/hive
     remote_src: True
     extra_opts: "--strip-components=1"
     creates: /hadoop/hive/LICENSE
   when:
-  - master_group in group_names
+  - head_group in group_names
 
 - name: Configure Hive profile
   template: src=profile.j2 dest=/etc/profile.d/hive.sh
@@ -27,7 +27,7 @@
   notify:
   - start metastore
   when:
-  - master_group in group_names
+  - head_group in group_names
 
 - name: Link Hadoop libraries
   file: src=/hadoop/share/hadoop/tools/lib/{{ item }} dest=/hadoop/hive/lib/{{ item }} state=link
@@ -37,7 +37,7 @@
   - aws-java-sdk-kms-{{ aws_java_sdk_version }}.jar
   - aws-java-sdk-s3-{{ aws_java_sdk_version }}.jar
   when:
-  - master_group in group_names
+  - head_group in group_names
 
 - name: Install mariadb packages
   yum: name={{ item }} state=installed
@@ -46,21 +46,21 @@
   - mysql-connector-java
   - MySQL-python
   when:
-  - master_group in group_names
+  - head_group in group_names
 
 - file:
     src: /usr/share/java/mysql-connector-java.jar
     dest: /hadoop/hive/lib/mysql-connector-java.jar
     state: link
   when:
-  - master_group in group_names
+  - head_group in group_names
 
 - name: Configure mariadb
   template: src=my.cnf.j2 dest=/etc/my.cnf
   notify:
   - restart mariadb
   when:
-  - master_group in group_names
+  - head_group in group_names
 
 - name: Create mariadb files and directories
   file: path={{ item.path }} mode=0755 owner=mysql group=mysql state={{ item.state }}
@@ -69,22 +69,22 @@
   - { path: /var/log/mysqld.log, state: touch }
   - { path: /var/run/mysqld/mysqld.pid, state: touch }
   when:
-  - master_group in group_names
+  - head_group in group_names
 
 - name: Disable selinux
   selinux: state=disabled
   when:
-  - master_group in group_names
+  - head_group in group_names
 
 - name: Start mariadb service
   service: name=mariadb state=started enabled=yes
   when:
-  - master_group in group_names
+  - head_group in group_names
 
 - name: Create hive database
   mysql_db: name={{ hive_metastore_database_name }} state=present
   when:
-  - master_group in group_names
+  - head_group in group_names
 
 - name: Create hive mysql user and grants
   mysql_user: name={{ hive_metastore_mysql_user }} password={{ hive_metastore_mysql_password }} priv=*.*:ALL host="{{ ansible_fqdn }}" state=present
@@ -92,4 +92,4 @@
   - init metastore
   - start metastore
   when:
-  - master_group in group_names
+  - head_group in group_names

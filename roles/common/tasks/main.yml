@@ -1,6 +1,27 @@
 ---
 # This playbook contains common plays that will be run on all nodes.
 
+- name: yum-utils for epel
+  action: >
+    {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
+  with_items:
+    - yum-utils
+
+- name: yum-utils for epel
+  action: >
+    {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
+  with_items:
+    - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  register: epel_installed
+
+- name: import epel key
+  command: rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+  when: epel_installed.changed
+
+- name: enable epel
+  command: yum-config-manager --enable epel/x86_64
+  when: epel_installed.changed
+
 - name: install required packages
   action: >
     {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
@@ -35,8 +56,10 @@
     name: firewalld
     enabled: no
     state: stopped
+
 - name: Install java
-  {{ ansible_pkg_mgr }} name=java-1.8.0-openjdk state=present
+  action: >
+    {{ ansible_pkg_mgr }} name=java-1.8.0-openjdk state=present
   tags: java
 
 - name: check for no ntp package
@@ -57,22 +80,19 @@
     - ntp_pkg_query.rc == 0
   tags: chrony
 
-- name: Copying Hadoop binaries to nodes
-  copy: src={{ hadoop_binary_name }} dest={{ tarball_dest_path }} 
-
-- name: Copying Spark binaries to nodes
-  copy: src={{ spark_binary_name }} dest={{ tarball_dest_path }}
-
-- name: Copying presto binaries to nodes
-  copy: src={{ presto_binary_name }} dest={{ tarball_dest_path }}
-
-- name: Copying presto cli to nodes
-  copy: src={{ presto_cli_name }} dest={{ tarball_dest_path }}
+- name: Copy binaries to nodes
+  get_url: url="{{ tarball_prefix }}{{ item }}" dest="{{ tarball_dest_path }}{{ item }}" force=no
+  with_items:
+    - "{{ hadoop_binary_name }}"
+    - "{{ spark_binary_name }}"
+    - "{{ presto_binary_name }}"
+    - "{{ presto_cli_name }}"
+    - "{{ prestoadmin_binary_name }}"
+    - "{{ hive_binary_name }}"
+    - "{{ maven_binary_name }}"
+    - "{{ secor_binary_name }}"
 
 - name: Copying Hive binaries to nodes
-  copy: src={{ hive_binary_name }} dest={{ tarball_dest_path }}
+  get_url: url="{{ tarball_prefix }}{{ hive_binary_name }}" dest="{{ tarball_dest_path }}{{ hive_binary_name }}" force=no
   when:
   - head_group in group_names
-
-- name: Copying Maven binaries to nodes
-  copy: src={{ maven_binary_name }} dest={{ tarball_dest_path }}

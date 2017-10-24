@@ -3,8 +3,8 @@
 
 # There should be a single host in this host group
 [head]
-qcttwcoehd57
+sarcoprion
 
 # All other compute hosts should be in this host group
 [worker]
-qcttwcoehd[58:80]
+plicatodus

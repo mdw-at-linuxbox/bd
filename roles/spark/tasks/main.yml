@@ -7,7 +7,7 @@
     mode: 0755
 
 - unarchive:
-    src: "{{ tarball_dest_path }}/{{ spark_binary_name }}"
+    src: "{{ tarball_dest_path }}{{ spark_binary_name }}"
     dest: /hadoop/spark
     remote_src: True
     extra_opts: "--strip-components=1"
@@ -44,7 +44,7 @@
   template: src=hive-site.j2 dest=/hadoop/spark/conf/hive-site.xml
   tags: spark
   when:
-  - master_group in group_names
+  - head_group in group_names
 
 - name: Link Spark libraries to Hive
   file: src=/hadoop/spark/jars/{{ item }} dest=/hadoop/hive/lib/{{ item }} state=link
@@ -53,4 +53,4 @@
   - spark-core_2.11-2.2.0.jar
   - spark-network-common_2.11-2.2.0.jar
   when:
-  - master_group in group_names
+  - head_group in group_names

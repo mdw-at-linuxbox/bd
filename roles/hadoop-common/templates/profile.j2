@@ -1,6 +1,6 @@
 export PATH=/hadoop/bin:$PATH
-export JAVA_HOME=/etc/alternatives/java_sdk
+export JAVA_HOME={{ java_sdk_path }}
 export HADOOP_HOME=/hadoop
 export HADOOP_LIBEXEC_DIR=/hadoop/libexec
-export HADOOP_CLASSPATH=/hadoop/etc/hadoop:/hadoop/share/hadoop/common/lib/*:/hadoop/share/hadoop/common/*:/hadoop/share/hadoop/hdfs:/hadoop/share/hadoop/hdfs/lib/*:/hadoop/share/hadoop/hdfs/*:/hadoop/share/hadoop/yarn/lib/*:/hadoop/share/hadoop/yarn/*:/hadoop/share/hadoop/mapreduce/lib/*:/hadoop/share/hadoop/mapreduce/*:/etc/alternatives/java_sdk/lib:/hadoop/contrib/capacity-scheduler/*.jar:/hadoop/share/hadoop/tools/lib/*
+export HADOOP_CLASSPATH=/hadoop/etc/hadoop:/hadoop/share/hadoop/common/lib/*:/hadoop/share/hadoop/common/*:/hadoop/share/hadoop/hdfs:/hadoop/share/hadoop/hdfs/lib/*:/hadoop/share/hadoop/hdfs/*:/hadoop/share/hadoop/yarn/lib/*:/hadoop/share/hadoop/yarn/*:/hadoop/share/hadoop/mapreduce/lib/*:/hadoop/share/hadoop/mapreduce/*:{{ java_sdk_path }}/lib:/hadoop/contrib/capacity-scheduler/*.jar:/hadoop/share/hadoop/tools/lib/*
 export CLASSPATH=$HADOOP_CLASSPATH

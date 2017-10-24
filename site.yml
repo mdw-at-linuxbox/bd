@@ -16,4 +16,5 @@
     - { role: spark, tags: spark }
 #    - maven
 #    - hive-testbench
+#    - secor
     - { role: presto, tags: presto }

@@ -19,7 +19,7 @@
 <configuration>
   <property>
     <name>fs.defaultFS</name>
-    <value>hdfs://{{ hostvars[groups[[master_group][0]][0]]['ansible_default_ipv4']['address'] }}:8020/</value>
+    <value>hdfs://{{ hostvars[groups[[head_group][0]][0]]['ansible_default_ipv4']['address'] }}:8020/</value>
   </property>
   <property>
     <name>hadoop.tmp.dir</name>
@@ -27,11 +27,11 @@
   </property>
   <property>
     <name>fs.s3a.access.key</name>
-    <value>{{ aws_access_key }}</value>
+    <value>{{ access_key }}</value>
   </property>
   <property>
     <name>fs.s3a.secret.key</name>
-    <value>{{ aws_secret_key }}</value>
+    <value>{{ secret_key }}</value>
   </property>
   <property>
     <name>fs.s3a.endpoint</name>

@@ -5,22 +5,26 @@
 deploy_method: 'bare'
 
 # You can override this with a local directory
-tarball_dest_path: '/root'
+tarball_dest_path: '/tmp/'
 
 hadoop_version: '2.8.1'
 aws_java_sdk_version: '1.10.6'
 spark_version: '2.2.0'
 presto_version: '0.170'
-hive_version: '2.1.1'
+hive_version: '2.2.0'
 maven_version: '3.5.0'
+secor_version: '0.23'
+prestoadmin_version: '2.2'
 
 hadoop_binary_name: hadoop-{{ hadoop_version }}.tar.gz
 spark_binary_name: spark-{{ spark_version }}-bin-hadoop2.7.tgz
 #spark_binary_name: spark-{{ spark_version }}-bin-without-hadoop.tgz
 presto_binary_name: presto-server-{{ presto_version }}.tar.gz
 presto_cli_name: presto-cli-{{ presto_version }}-executable.jar
+prestoadmin_binary_name: prestoadmin-{{ prestoadmin_version }}-offline.tar.gz
 hive_binary_name: apache-hive-{{ hive_version }}-bin.tar.gz
 maven_binary_name: apache-maven-{{ maven_version }}-bin.tar.gz
+secor_binary_name: secor-{{ secor_version }}.tar.gz
 
 # S3 setup
 access_key: "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
@@ -31,9 +35,9 @@ ntpserver: time.nasa.gov
 
 # S3A Configuration
 # Use these to have Hadoop use a Ceph endpoint
-s3a_endpoint: 's3.amazonaws.com'           # default 's3.amazonaws.com'
-s3a_ssl_enabled: 'true'                    # default true
-s3a_path_style_access: 'false'             # default false
+s3a_endpoint: 'symmorium.eng.arb.redhat.com'           # default 's3.amazonaws.com'
+s3a_ssl_enabled: 'false'                    # default true
+s3a_path_style_access: 'true'             # default false
 
 # Defaults should be appropriate in Hadoop 2.8.1
 s3a_connection_max: 15                     # default 15
@@ -68,11 +72,8 @@ s3a_fast_upload_buffer: 'disk'             # default 'disk'
 s3a_fast_upload_active_blocks: 8           # default 8
 s3a_input_fadvise: 'sequential'            # default 'sequential'
 
-s3a_buffer_dir: '/home/s3a'
 yarn_local_dirs: '/home'
 yarn_app_log_dir: 's3a://app-logs/'
-
-s3a_signing_algorithm: 'S3Signer'
 
 # Hadoop
 hadoop_tmp_dir: '/tmp/hadoop-${user.name}' # default '/tmp/hadoop-${user.name}'

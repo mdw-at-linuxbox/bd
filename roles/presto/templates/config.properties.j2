@@ -1,4 +1,4 @@
-{% if inventory_hostname in groups[master_group] %}
+{% if inventory_hostname in groups[head_group] %}
 coordinator=true
 discovery-server.enabled=true
 node-scheduler.include-coordinator=false
@@ -9,4 +9,4 @@ http-server.http.port=8880
 query.max-memory={{ presto_max_memory_per_cluster }}
 query.max-memory-per-node={{ presto_max_memory_per_node }}
 discovery-server.enabled=true
-discovery.uri=http://{{ hostvars[groups[[master_group][0]][0]]['ansible_default_ipv4']['address'] }}:8880
+discovery.uri=http://{{ hostvars[groups[[head_group][0]][0]]['ansible_default_ipv4']['address'] }}:8880

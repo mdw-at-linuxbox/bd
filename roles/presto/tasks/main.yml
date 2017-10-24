@@ -12,7 +12,7 @@
     mode: 0755
  
 - unarchive:
-    src: "{{ tarball_dest_path }}/{{ presto_binary_name }}"
+    src: "{{ tarball_dest_path }}{{ presto_binary_name }}"
     dest: /hadoop/presto
     remote_src: True
     extra_opts: "--strip-components=1"
@@ -21,6 +21,7 @@
 - copy: 
     src: "{{ tarball_dest_path }}/{{ presto_cli_name }}"
     dest: /hadoop/presto/presto
+    remote_src: True
     mode: 0700
 
 - name: Configure profile
