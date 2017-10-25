@@ -1,5 +1,5 @@
 ---
-# This playbook deploys the whole application stack in this site.
+# This playbook stops hadoop and its various pieces and dependencies
 
 - name: apply common configuration to all nodes
   hosts: all:!localhost
@@ -8,27 +8,32 @@
   become_method: sudo
   vars_files:
     - "vars/{{ deploy_method }}.yml"
+    - "vars/resources.yml"
   tasks:
 
   - name: stop namenode
-    shell: JAVA_HOME=/usr/java/jdk1.8.0_131 /hadoop/sbin/hadoop-daemon.sh --config /hadoop/etc/hadoop stop namenode     
+    shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/hadoop-daemon.sh stop namenode     
     when:
       - head_group in group_names
 
   - name: stop datanode
-    shell: JAVA_HOME=/usr/java/jdk1.8.0_131 /hadoop/sbin/hadoop-daemon.sh --config /hadoop/etc/hadoop stop datanode
+    shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/hadoop-daemon.sh stop datanode
   
   - name: stop resourcemanager
-    shell: JAVA_HOME=/usr/java/jdk1.8.0_131 /hadoop/sbin/yarn-daemon.sh --config /hadoop/etc/hadoop stop resourcemanager
+    shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/yarn-daemon.sh stop resourcemanager
     when: 
     - head_group in group_names
 
   - name: stop historyserver
-    shell: JAVA_HOME=/usr/java/jdk1.8.0_131 /hadoop/sbin/mr-jobhistory-daemon.sh --config /hadoop/etc/hadoop stop historyserver
+    shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/mr-jobhistory-daemon.sh stop historyserver
     when:
     - head_group in group_names
 
   - name: stop nodemanager
-    shell: JAVA_HOME=/usr/java/jdk1.8.0_131 /hadoop/sbin/yarn-daemon.sh --config /hadoop/etc/hadoop stop nodemanager
+    shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/yarn-daemon.sh stop nodemanager
     when:
     - worker_group in group_names
+
+  - name: Stop presto
+    shell: '/hadoop/presto/bin/launcher stop'
+    tag: presto

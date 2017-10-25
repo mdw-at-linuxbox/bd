@@ -1,0 +1,39 @@
+---
+# This playbook stops hadoop and its various pieces and dependencies
+
+- name: apply common configuration to all nodes
+  hosts: all:!localhost
+  remote_user: '{{ remote_user }}'
+  become: yes
+  become_method: sudo
+  vars_files:
+    - "vars/{{ deploy_method }}.yml"
+    - "vars/resources.yml"
+  tasks:
+
+  - name: start namenode
+    shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/hadoop-daemon.sh start namenode     
+    when:
+      - head_group in group_names
+
+  - name: start datanode
+    shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/hadoop-daemon.sh start datanode
+  
+  - name: start resourcemanager
+    shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/yarn-daemon.sh start resourcemanager
+    when: 
+    - head_group in group_names
+
+  - name: start historyserver
+    shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/mr-jobhistory-daemon.sh start historyserver
+    when:
+    - head_group in group_names
+
+  - name: start nodemanager
+    shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/yarn-daemon.sh start nodemanager
+    when:
+    - worker_group in group_names
+
+  - name: Stop presto
+    shell: '/hadoop/presto/bin/launcher restart'
+    tag: presto
