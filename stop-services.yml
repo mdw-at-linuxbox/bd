@@ -15,25 +15,36 @@
     shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/hadoop-daemon.sh stop namenode     
     when:
       - head_group in group_names
+    tags: hdfs
 
   - name: stop datanode
     shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/hadoop-daemon.sh stop datanode
+    tags: hdfs
   
   - name: stop resourcemanager
     shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/yarn-daemon.sh stop resourcemanager
     when: 
     - head_group in group_names
+    tags: yarn
 
   - name: stop historyserver
     shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/mr-jobhistory-daemon.sh stop historyserver
     when:
     - head_group in group_names
+    tags: hadoop
 
   - name: stop nodemanager
     shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/yarn-daemon.sh stop nodemanager
     when:
     - worker_group in group_names
+    tags: yarn
+
+  - name: stop timelineserver
+    shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/yarn-daemon.sh stop timelineserver
+    when:
+    - head_group in group_names
+    tags: yarn
 
   - name: Stop presto
     shell: '/hadoop/presto/bin/launcher stop'
-    tag: presto
+    tags: presto
