@@ -4,22 +4,36 @@
 - name: yum-utils for epel
   action: >
     {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
+  tags: epel
   with_items:
     - yum-utils
 
-- name: yum-utils for epel
+- name: check for epel
+  command: rpm -q epel-release-7
+  register: epel_pkg_query
+  ignore_errors: true
+  check_mode: no
+  changed_when: false
+  tags: epel
+  when: ansible_pkg_mgr == "yum" or ansible_pkg_mgr == "dnf"
+
+- name: epel repository
   action: >
     {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
   with_items:
     - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   register: epel_installed
+  tags: epel
+  when: epel_pkg_query.rc != 0
 
 - name: import epel key
   command: rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+  tags: epel
   when: epel_installed.changed
 
 - name: enable epel
   command: yum-config-manager --enable epel/x86_64
+  tags: epel
   when: epel_installed.changed
 
 - name: install required packages
@@ -66,7 +80,7 @@
   command: rpm -q chrony
   register: ntp_pkg_query
   ignore_errors: true
-  always_run: true
+  check_mode: no
   changed_when: false
   tags: chrony
   when: ansible_pkg_mgr == "yum" or ansible_pkg_mgr == "dnf"
