@@ -62,14 +62,38 @@
   when:
   - head_group in group_names
 
-- name: Create mariadb files and directories
+- name: Stat before touching
+  stat: path={{ item }}
+  register: mysqld_stat
+  ignore_errors: true
+  check_mode: no
+  changed_when: false
+  with_items:
+  - /var/log/mysqld.log
+  - /var/run/mysqld/mysqld.pid
+  when:
+  - head_group in group_names
+
+- name: Create mariadb run directory
   file: path={{ item.path }} mode=0755 owner=mysql group=mysql state={{ item.state }}
   with_items:
   - { path: /var/run/mysqld, state: directory }
-  - { path: /var/log/mysqld.log, state: touch }
-  - { path: /var/run/mysqld/mysqld.pid, state: touch }
   when:
   - head_group in group_names
+
+- name: Create mariadb log file
+  file: path={{ item.path }} mode=0755 owner=mysql group=mysql state={{ item.state }}
+  with_items:
+  - { path: /var/log/mysqld.log, state: touch }
+  when:
+  - head_group in group_names and not mysqld_stat.results[0].stat.exists
+
+- name: Create mariadb run pid
+  file: path={{ item.path }} mode=0755 owner=mysql group=mysql state={{ item.state }}
+  with_items:
+  - { path: /var/run/mysqld/mysqld.pid, state: touch }
+  when:
+  - head_group in group_names and not mysqld_stat.results[1].stat.exists
 
 - name: Disable selinux
   selinux: state=disabled
