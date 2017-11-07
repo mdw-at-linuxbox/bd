@@ -27,8 +27,14 @@
   </property>
   <property>
     <name>dfs.blocksize</name>
-    <value>1073741824</value>
+    <value>16777216</value>	<!-- was: 1073741824 mdw -->
   </property>
+{% if groups['all'] | length < 3 %}
+  <property>
+    <name>dfs.replication</name>
+    <value>{{ groups['all'] | length }}</value>
+  </property>
+{% endif %}
   <property>
     <name>dfs.namenode.handler.count</name>
     <value>100</value>
