@@ -23,11 +23,23 @@
     <value>org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler</value>
   </property>
   <property>
-    <name>yarn.scheduler.maximum-allocation-mb</name>
-{% if ( memtotal.stdout|int * 0.25 ) > 8192 %}
-    <value>{{ memtotal.stdout|int - 8192 }}</value>
+    <name>yarn.scheduler.increment-allocation-mb</name>
+    <value>512</value>
+  </property>
+  <property>
+    <name>yarn.scheduler.minimum-allocation-mb</name>
+{% if useable_memory|int > 11451 %}
+    <value>{{ useable_memory|int - 8192 }}</value>
 {% else %}
-    <value>{{ ( memtotal.stdout|int * 0.75 )|int }}</value>
+    <value>{{ ( useable_memory|int * 0.284603 )|int }}</value>
+{% endif %}
+  </property>
+  <property>
+    <name>yarn.scheduler.maximum-allocation-mb</name>
+{% if useable_memory|int > 16384 %}
+    <value>{{ useable_memory|int - 8192 }}</value>
+{% else %}
+    <value>8192</value>
 {% endif %}
   </property>
   <property>
@@ -35,19 +47,27 @@
     <value>false</value>
   </property>
   <property>
+    <name>yarn.scheduler.minimum-allocation-vcores</name>
+    <value>1</value>
+  </property>
+  <property>
+    <name>yarn.scheduler.increment-allocation-vcores</name>
+    <value>1</value>
+  </property>
+  <property>
     <name>yarn.scheduler.maximum-allocation-vcores</name>
-    <value>{{ (1 + groups['worker'] | length) * ansible_processor_vcpus  }}</value>
+    <value>{{ ((1 + groups['worker'] | length) * ansible_processor_vcpus * 0.5)|int }}</value>
   </property>
   <property>
     <name>yarn.nodemanager.resource.cpu-vcores</name>
-    <value>{{ ansible_processor_vcpus }}</value>
+    <value>{{ ansible_processor_vcpus|int * 2 }}</value>
   </property>
   <property>
     <name>yarn.nodemanager.resource.memory-mb</name>
-{% if ( memtotal.stdout|int * 0.25 ) > 8192 %}
-    <value>{{ memtotal.stdout|int - 8192 }}</value>
+{% if useable_memory|int > 69189 %}
+    <value>{{ useable_memory|int - 8192 }}</value>
 {% else %}
-    <value>{{ ( memtotal.stdout|int * 0.75 )|int }}</value>
+    <value>{{ ( useable_memory|int * 0.881601 )|int }}</value>	<!-- changed mdw -->
 {% endif %}
   </property>
   <property>
