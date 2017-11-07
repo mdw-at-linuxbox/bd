@@ -1,0 +1,5 @@
+{% block fred %}
+{%  for a in groups['all']|reverse %}
+{{ hostvars[a]['ansible_default_ipv4']['address'] }} /{{ "abcdefghijklmnopqrstuvwxyz"[loop.index0] }}
+{%  endfor %}
+{% endblock fred %}

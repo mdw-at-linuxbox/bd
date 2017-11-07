@@ -114,6 +114,14 @@
     <value>{{ s3a_signing_algorithm }}</value>
   </property>
   <property>
+    <name>net.topology.table.file.name</name>
+    <value>/hadoop/etc/hadoop/rack-table</value>
+  </property>
+  <property>
+    <name>net.topology.node.switch.mapping.impl</name>
+    <value>org.apache.hadoop.net.TableMapping</value>
+  </property>
+  <property>
     <name>fs.s3a.block.size</name>
     <value>{{ s3a_block_size }}</value>
   </property>
