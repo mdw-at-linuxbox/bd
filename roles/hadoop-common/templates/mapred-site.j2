@@ -61,35 +61,43 @@
   </property>
   <property>
     <name>mapreduce.map.memory.mb</name>
-{% if ( memtotal.stdout|int * 0.25 ) > 8192 %}
-    <value>{{ ((memtotal.stdout|int - 8192) / ansible_processor_vcpus)|int }}</value>
+{% if useable_memory|int > 10824 %}
+    <value>{{ ((useable_memory|int - 8192) / ansible_processor_vcpus)|int }}</value>
 {% else %}
-    <value>{{ (( memtotal.stdout|int * 0.75 )|int / ansible_processor_vcpus)|int }}</value>
+    <value>{{ (( useable_memory|int * 0.56921 )|int / ansible_processor_vcpus)|int }}</value>
 {% endif %}
   </property>
   <property>
     <name>mapreduce.map.java.opts</name>
-{% if ( memtotal.stdout|int * 0.25 ) > 8192 %}
-    <value>-Xmx{{ ((memtotal.stdout|int - 8192) / ansible_processor_vcpus * 0.8)|round(0, 'ceil')|int }}M</value>
+{% if useable_memory|int > 10824 %}
+    <value>-Xmx{{ ((useable_memory|int - 8192) / ansible_processor_vcpus * 0.8789)|round(0, 'ceil')|int }}M</value>
 {% else %}
-    <value>-Xmx{{ (( memtotal.stdout|int * 0.75 )|int / ansible_processor_vcpus * 0.8)|round(0, 'ceil')|int }}M</value>
+    <value>-Xmx{{ (( useable_memory|int * 0.569205 )|int / ansible_processor_vcpus * 0.8789)|round(0, 'ceil')|int }}M</value>		<!-- changed from 930M mdw -->
 {% endif %}
   </property>
   <property>
     <name>mapreduce.reduce.memory.mb</name>
-{% if ( memtotal.stdout|int * 0.25 ) > 8192 %}
-    <value>{{ ((memtotal.stdout|int - 8192) / ansible_processor_vcpus * 2)|int }}</value>
+{% if useable_memory|int > 11450 %}
+    <value>{{ ((useable_memory|int - 8192) * 2 / ansible_processor_vcpus)|int }}</value>
 {% else %}
-    <value>{{ (( memtotal.stdout|int * 0.75 )|int / ansible_processor_vcpus * 2)|int }}</value>
+    <value>{{ (( useable_memory|int * 0.284603 )|int * 2 / ansible_processor_vcpus)|int }}</value>
 {% endif %}
   </property>
   <property>
     <name>mapreduce.reduce.java.opts</name>
-{% if ( memtotal.stdout|int * 0.25 ) > 8192 %}
-    <value>-Xmx{{ ((memtotal.stdout|int - 8192) / ansible_processor_vcpus * 2 * 0.8)|round(0, 'ceil')|int }}M</value>
+{% if useable_memory|int > 11450 %}
+    <value>-Xmx{{ ((useable_memory|int - 8192) * 1.7578 / ansible_processor_vcpus)|round(0, 'ceil')|int }}M</value>
 {% else %}
-    <value>-Xmx{{ (( memtotal.stdout|int * 0.75 )|int / ansible_processor_vcpus * 2 * 0.8)|round(0, 'ceil')|int }}M</value>
+    <value>-Xmx{{ (( useable_memory|int * 0.284603 )|int * 1.7578 / ansible_processor_vcpus)|round(0, 'ceil')|int }}M</value>
 {% endif %}
+  </property>
+  <property>
+    <name>mapreduce.map.cpu.vcores</name>
+    <value>1</value>
+  </property>
+  <property>
+    <name>mapreduce.reduce.cpu.vcores</name>
+    <value>1</value>
   </property>
   <property>
     <name>mapreduce.task.io.sort.factor</name>
@@ -97,7 +105,7 @@
   </property>
   <property>
     <name>mapreduce.task.io.sort.mb</name>
-    <value>512</value>
+    <value>256</value>
   </property>
   <property>
     <name>mapreduce.jobhistory.address</name>
@@ -111,4 +119,23 @@
     <name>mapreduce.fileoutputcommitter.algorithm.version</name>
     <value>2</value>
   </property> 
+<!-- start added mdw -->
+  <property>
+    <name>yarn.app.mapreduce.am.resource.mb</name>
+{% if useable_memory|int > 11450 %}
+    <value>{{ ((useable_memory|int - 8192) * 2 / ansible_processor_vcpus)|round(0, 'ceil')|int }}</value>
+{% else %}
+    <value>{{ (( useable_memory|int * 0.284603 )|int * 2 / ansible_processor_vcpus)|round(0, 'ceil')|int }}</value>
+{% endif %}
+  </property>
+  <property>
+    <name>yarn.app.mapreduce.am.command-opts</name>
+{% if useable_memory|int > 11450 %}
+    <value>-Xmx{{ ((useable_memory|int - 8192) * 1.7578 / ansible_processor_vcpus)|round(0, 'ceil')|int }}m</value>
+{% else %}
+    <value>-Xmx{{ (( useable_memory|int * 0.284603 )|int * 1.7578 / ansible_processor_vcpus)|round(0, 'ceil')|int }}m</value>
+{% endif %}
+  </property>
+<!-- end added mdw -->
+
 </configuration>
