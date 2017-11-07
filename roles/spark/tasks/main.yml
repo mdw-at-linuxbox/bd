@@ -32,6 +32,8 @@
 
 - name: Get aws-java-sdk*.jar file names
   shell: "cd /hadoop/share/hadoop/tools/lib ; ls aws-java-sdk*"
+  check_mode: no
+  changed_when: false
   register: aws_java_sdk_jar_name
 
 - file:
