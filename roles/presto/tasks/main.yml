@@ -40,7 +40,7 @@
 
 - name: Configure Presto config properties
   template: src=config.properties.j2 dest=/hadoop/presto/etc/config.properties
-  changed_when: true
+#  changed_when: true
   notify: Restart Presto
   tags: presto 
 
