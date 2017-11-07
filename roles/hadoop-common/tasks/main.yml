@@ -1,11 +1,15 @@
 ---
 # This playbook installs and configures Apache Hadoop
 
-- name: Create hadoop directories
+- name: Create hdfs directories
+  file: path={{ item }} state=directory mode=0700
+  with_items:
+  - /hadoop/hdfs/dn
+
+- name: Create yarn directories
   file: path={{ item }} state=directory mode=0755
   with_items:
   - /hadoop/hdfs/nn
-  - /hadoop/hdfs/dn
   - /hadoop/yarn/nm
 
 - unarchive:
@@ -24,9 +28,33 @@
   tags: hadoop
 
 # NB: DirectMap doesn't account for virtio balloon driver
-- name: Calculate memory settings
+- name: Get memory settings
   command: awk '/MemTotal/{total+=$2}END{print total/1024}' /proc/meminfo
+  check_mode: no
+  changed_when: no
+  tags: ram
   register: memtotal
+
+- name: Calculate usable memory
+  set_fact:
+    useable_memory: "{{ (memtotal.stdout|int - 2048) if head_group in group_names else (memtotal.stdout) }}"
+  check_mode: no
+  tags: ram
+  changed_when: no
+
+- name: Report out
+  debug:
+   msg: "Memtotal: {{ memtotal.stdout }} useable {{ useable_memory }}"
+  check_mode: no
+  changed_when: no
+  tags: ram
+
+- name: Report out
+  debug:
+   msg: "Memtotal: {{ memtotal.stdout|int }} useable {{useable_memory|int * 1.0 }}"
+  check_mode: no
+  changed_when: no
+  tags: ram
 
 - name: Configure profile
   template: src=profile.j2 dest=/etc/profile.d/hadoop.sh
@@ -38,6 +66,10 @@
 
 - name: Configure core site file
   template: src=core-site.j2 dest=/hadoop/etc/hadoop/core-site.xml
+  tags: hadoop
+
+- name: Configure rack table
+  template: src=rack-table.j2 dest=/hadoop/etc/hadoop/rack-table
   tags: hadoop
 
 - name: Configure hdfs site file
