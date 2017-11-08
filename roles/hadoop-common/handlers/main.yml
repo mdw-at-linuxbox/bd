@@ -5,49 +5,72 @@
   shell: creates=/hadoop/hdfs/nn/current/VERSION JAVA_HOME={{ java_sdk_path }} /hadoop/bin/hdfs namenode -format
   when:
   - head_group in group_names
+  tags: hdfs
 
 - name: stop namenode
   shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/hadoop-daemon.sh stop namenode
   when:
   - head_group in group_names
+  tags: hdfs
 
 - name: start namenode
   shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/hadoop-daemon.sh start namenode
   when:
   - head_group in group_names
+  tags: hdfs
 
 - name: stop datanode
   shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/hadoop-daemon.sh stop datanode
+  tags: hdfs
 
 - name: start datanode
   shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/hadoop-daemon.sh start datanode
+  tags: hdfs
 
 - name: stop resourcemanager
   shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/yarn-daemon.sh stop resourcemanager
   when: 
   - head_group in group_names
+  tags: yarn
 
 - name: start resourcemanager
   shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/yarn-daemon.sh start resourcemanager
   when: 
   - head_group in group_names
+  tags: yarn
 
 - name: stop historyserver
   shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/mr-jobhistory-daemon.sh stop historyserver
   when:
   - head_group in group_names
+  tags: hadoop
 
 - name: start historyserver
   shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/mr-jobhistory-daemon.sh start historyserver
   when:
   - head_group in group_names
+  tags: hadoop
 
 - name: stop nodemanager
   shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/yarn-daemon.sh stop nodemanager
   when:
   - worker_group in group_names
+  tags: yarn
 
 - name: start nodemanager
   shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/yarn-daemon.sh start nodemanager
   when:
   - worker_group in group_names
+  tags: yarn
+
+- name: stop timelineserver
+  shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/yarn-daemon.sh stop timelineserver
+  when:
+  - head_group in group_names
+  tags: yarn
+
+- name: start timelineserver
+  shell: JAVA_HOME={{ java_sdk_path }} /hadoop/sbin/yarn-daemon.sh start timelineserver
+  when:
+  - head_group in group_names
+  tags: yarn
